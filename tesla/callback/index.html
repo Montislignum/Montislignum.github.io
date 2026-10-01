@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <title>Videresender…</title>
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; max-width: 520px; margin: 15vh auto; padding: 0 16px; color: #222; background: #fafaf8; }
+    a { display: block; margin: 8px 0; }
+    @media (prefers-color-scheme: dark) { body { color: #eee; background: #161615; } a { color: #8ab4f8; } }
+  </style>
+</head>
+<body>
+  <p id="msg">Videresender til hjem-dashboardet…</p>
+  <div id="links" hidden>
+    <p>Kom du ikke videre? Vælg den adresse, der virker på din enhed:</p>
+    <a id="ts" href="#">Via Tailscale (hjem-pi)</a>
+    <a id="lan" href="#">Hjemme på wifi (192.168.1.222)</a>
+  </div>
+  <script>
+    // Tesla sender brugeren hertil efter login. Siden sender bare koden videre til dashboardet
+    // på hjemmenetværket/Tailscale – den gemmer og viser intet.
+    var q = location.search;
+    var ts = 'http://hjem-pi:8787/tesla/callback' + q;
+    var lan = 'http://192.168.1.222:8787/tesla/callback' + q;
+    document.getElementById('ts').href = ts;
+    document.getElementById('lan').href = lan;
+    history.replaceState(null, '', location.pathname); // fjern koden fra adresselinjen/historikken
+    if (!/[?&]code=/.test(q)) {
+      document.getElementById('msg').textContent = 'Der mangler en login-kode.';
+      document.getElementById('links').hidden = false;
+    } else {
+      setTimeout(function () { document.getElementById('links').hidden = false; }, 2500);
+      location.replace(ts);
+    }
+  </script>
+</body>
+</html>
