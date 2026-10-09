@@ -33,7 +33,8 @@
       document.getElementById('links').hidden = false;
     } else {
       setTimeout(function () { document.getElementById('links').hidden = false; }, 2500);
-      location.replace(ts);
+      // Dashboardet skriver i state, om login blev startet fra 192.168.1.222 (~lan) eller hjem-pi (~ts)
+      location.replace(/[?&]state=[^&]*(~|%7E)lan(&|$)/i.test(q) ? lan : ts);
     }
   </script>
 </body>
